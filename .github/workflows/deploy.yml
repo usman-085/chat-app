@@ -1,64 +1,25 @@
-name: Deploy to EC2
-
+name: Create File on EC2
+ 
 on:
   push:
     branches:
-      - master
-
+      - main
+ 
 jobs:
-  deploy:
+  create-file:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Run SSH commands
-      uses: appleboy/ssh-action@v0.1.6
-      with:
-        host: 54.164.30.247
-        username: ec2-user
-        key: |
-          -----BEGIN OPENSSH PRIVATE KEY-----
-          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
-        # passphrase: ${{ secrets.EC2_PASSPHRASE }}
-        script: |
-          cd /path/to/your/deployment/directory
-          git pull origin master
-          docker-compose down
-          docker-compose up -d --build
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+ 
+    - name: Add EC2 to known hosts
+      run: ssh-keyscan -H ec2-your-instance-public-ip >> ~/.ssh/known_hosts
+ 
+    - name: Create a file on EC2
+      run: |
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@ec2-your-instance-public-ip "echo 'Hello from GitHub Actions!' > /home/ec2-user/created_file.txt"
