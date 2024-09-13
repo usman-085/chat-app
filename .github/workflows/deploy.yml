@@ -18,6 +18,29 @@ jobs:
  
     - name: Add EC2 to known hosts
       run: ssh-keyscan -H 54.164.30.247 >> ~/.ssh/known_hosts
+
+    - name: Upload Docker Compose File to EC2
+      run: |
+        scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-compose.yml ec2-user@54.164.30.247:/home/ec2-user/docker-compose.yml
+        
+    - name: Deploy using Docker Compose
+      run: |
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@54.164.30.247 << 'EOF'
+        cd /home/ec2-user
+
+        docker-compose down
+
+        git pull
+
+        docker-compose up -d --build
+
+        EOF
+
+    - name: Docker system prune
+      run: |
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@54.164.30.247 << 'EOF'
+        docker system prune -f
+        EOF
  
     - name: Create a file on EC2
       run: |
