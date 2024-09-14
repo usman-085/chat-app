@@ -19,6 +19,11 @@ jobs:
     - name: Add EC2 to known hosts
       run: ssh-keyscan -H 54.164.30.247 >> ~/.ssh/known_hosts
 
+    - name: Upload Docker Files to EC2
+      run: |
+        mkdir -p /home/ec2-user/backend
+        scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no Dockerfile ec2-user@54.164.30.247:/home/ec2-user/dockerfile
+
     - name: Create a file on EC2
       run: |
         ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@54.164.30.247 "echo 'Hello from GitHub Actions!' > /home/ec2-user/created_file.txt"
