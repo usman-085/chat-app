@@ -25,8 +25,7 @@ jobs:
 
     - name: Upload Docker Files to EC2
       run: |
-        mkdir -p /home/ec2-user/backend
-        scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no Dockerfile ec2-user@54.164.30.247:/home/ec2-user/backend/Dockerfile
+        scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no Dockerfile ec2-user@54.164.30.247:/home/ec2-user/Dockerfile
 
     - name: Upload Docker Compose File to EC2
       run: |
