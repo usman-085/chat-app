@@ -19,30 +19,60 @@ jobs:
     - name: Add EC2 to known hosts
       run: ssh-keyscan -H 54.164.30.247 >> ~/.ssh/known_hosts
 
-    - name: Create a file on EC2
-      run: |
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@54.164.30.247 "echo 'Hello from GitHub Actions!' > /home/ec2-user/created_file.txt"
+    # - name: Create a file on EC2
+    #   run: |
+    #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@54.164.30.247 "echo 'Hello from GitHub Actions!' > /home/ec2-user/created_file.txt"
 
-    - name: Upload Docker Compose File to EC2
-      run: |
-        scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-compose.yml ec2-user@54.164.30.247:/home/ec2-user/docker-compose.yml
+    # - name: Upload Docker Compose File to EC2
+    #   run: |
+    #     scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-compose.yml ec2-user@54.164.30.247:/home/ec2-user/docker-compose.yml
         
-    - name: Deploy using Docker Compose
+    # - name: Deploy using Docker Compose
+    #   run: |
+    #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@54.164.30.247 << 'EOF'
+    #     cd /home/ec2-user
+
+    #     if ! command -v docker-compose &> /dev/null
+    #     then
+    #       echo "docker-compose could not be found"
+    #       exit 1
+    #     fi
+
+    #     docker-compose down
+
+    #     git pull
+
+    #     docker-compose up -d --build
+
+    #     EOF
+    - name: Clone Repository and Deploy Using Docker Compose
       run: |
         ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@54.164.30.247 << 'EOF'
         cd /home/ec2-user
 
+        # If the directory does not exist, clone the repository
+        if [ ! -d "chat-app" ]; then
+          git clone https://github.com/usman-085/chat-app.git chat-app
+        else
+          # If it exists, pull the latest changes
+          cd chat-app
+          git pull
+        fi
+
+        cd chat-app
+
+        # Check if Docker Compose is installed
         if ! command -v docker-compose &> /dev/null
         then
           echo "docker-compose could not be found"
           exit 1
         fi
 
-        docker-compose down
+        # Use Docker Compose to bring down any running containers
+        sudo docker-compose down
 
-        git pull
-
-        docker-compose up -d --build
+        # Use Docker Compose to build and start containers
+        sudo docker-compose up -d --build
 
         EOF
 
