@@ -32,6 +32,12 @@ jobs:
         ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@54.164.30.247 << 'EOF'
         cd /home/ec2-user
 
+        if ! command -v docker-compose &> /dev/null
+        then
+          echo "docker-compose could not be found"
+          exit 1
+        fi
+
         docker-compose down
 
         git pull
