@@ -23,11 +23,6 @@ jobs:
       run: |
         ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@54.164.30.247 "echo 'Hello from GitHub Actions!' > /home/ec2-user/created_file.txt"
 
-    - name: Upload Docker Files to EC2
-      run: |
-        scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no Dockerfile ec2-user@54.164.30.247:/home/ec2-user/Dockerfile
-        scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no frontend/Dockerfile ec2-user@54.164.30.247:/home/ec2-user/Dockerfile
-
     - name: Upload Docker Compose File to EC2
       run: |
         scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-compose.yml ec2-user@54.164.30.247:/home/ec2-user/docker-compose.yml
